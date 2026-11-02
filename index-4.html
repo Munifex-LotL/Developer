@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Light of the Lost — Play</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;background:#090806;color:#e8dcc5;font-family:Georgia,serif;overflow:hidden}
+iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#090806}
+#loading,#missing{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#302319,#090806 70%);text-align:center;padding:30px;z-index:5}
+#missing{display:none}.panel{max-width:480px}.cross{color:#c7a465;font-size:35px}h1{font-weight:normal;letter-spacing:.12em;text-transform:uppercase;font-size:clamp(30px,6vw,52px);margin:24px 0}p{line-height:1.7;color:#b8aa92}code{color:#f5d593}#fullscreen{position:fixed;right:14px;top:14px;z-index:6;border:1px solid #aa8852;background:#15110bd9;color:#e9d9b9;padding:10px 14px;cursor:pointer;font:12px system-ui,sans-serif}
+</style>
+</head>
+<body>
+<div id="loading"><div class="panel"><div class="cross">✠</div><h1>Light of the Lost</h1><p>Loading adventure…</p></div></div>
+<div id="missing"><div class="panel"><div class="cross">✠</div><h1>Light of the Lost</h1><p>The game has not been published yet. Add your game file as <code>game.html</code> to the same folder as <code>index.html</code> in your website repository. This is a one-time setup, not something visitors ever need to do.</p></div></div>
+<iframe id="game" title="Light of the Lost" allow="fullscreen; autoplay; gamepad" allowfullscreen></iframe>
+<button id="fullscreen" type="button">⛶ Fullscreen</button>
+<script>
+(async function(){
+ const game=document.getElementById('game');
+ try {
+   const response=await fetch('./game.html',{cache:'no-store'});
+   if(!response.ok)throw Error('Missing game');
+   const source=await response.text();
+   if(!/<(?:html|body|script|canvas)\b/i.test(source))throw Error('Not an HTML game');
+   game.addEventListener('load',()=>{document.getElementById('loading').style.display='none'},{once:true});
+   game.src='./game.html';
+ }catch(err){document.getElementById('loading').style.display='none';document.getElementById('missing').style.display='flex';}
+ document.getElementById('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){console.warn(e)}};
+})();
+</script>
+</body>
+</html>
